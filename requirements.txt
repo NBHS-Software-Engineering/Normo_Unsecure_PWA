@@ -5,3 +5,7 @@ Flask-WTF
 Flask-Limiter
 qrcode
 pyotp
+bcrypt
+requests
+matplotlib
+rich

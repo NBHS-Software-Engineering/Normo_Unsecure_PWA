@@ -2,12 +2,15 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import redirect
+from flask_cors import CORS
 import user_management as dbHandler
 
 # Code snippet for logging a message
 # app.logger.critical("message")
 
 app = Flask(__name__)
+# Enable CORS to allow cross-origin requests (needed for CSRF demo in Codespaces)
+CORS(app)
 
 
 @app.route("/success.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
@@ -43,10 +46,15 @@ def signup():
 @app.route("/index.html", methods=["POST", "GET", "PUT", "PATCH", "DELETE"])
 @app.route("/", methods=["POST", "GET"])
 def home():
+    # Simple Dynamic menu
     if request.method == "GET" and request.args.get("url"):
         url = request.args.get("url", "")
         return redirect(url, code=302)
-    if request.method == "POST":
+    # Pass message to front end
+    elif request.method == "GET":
+        msg = request.args.get("msg", "")
+        return render_template("/index.html", msg=msg)
+    elif request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         isLoggedIn = dbHandler.retrieveUsers(username, password)
